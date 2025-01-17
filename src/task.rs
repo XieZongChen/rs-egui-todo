@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub enum TaskStatus {
     Todo,
     Doing,
     Done,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub enum TaskGenre {
     Low,
     Medium,
@@ -17,7 +17,7 @@ pub enum TaskGenre {
 /**
  * 任务数据结构
  */
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Task {
     pub status: TaskStatus, // 任务状态
     pub genre: TaskGenre,   // 任务类型
@@ -39,5 +39,9 @@ impl Task {
             genre: TaskGenre::Medium,
             content: content,
         }
+    }
+
+    pub fn ui(&self, ui: &mut egui::Ui) {
+        ui.label(&self.content);
     }
 }

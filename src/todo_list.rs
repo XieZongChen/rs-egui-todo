@@ -1,7 +1,7 @@
 use eframe::App; // 引入 eframe 库中的 App trait，用于定义应用程序的行为
 use egui::Context; // 引入 egui 库中的 Context 结构体，用于管理 egui 的绘制上下文
 
-use crate::Task;
+use crate::{Task};
 
 // 派生 Deserialize、Serialize，这样就可以在关机时持久化应用状态
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -10,7 +10,7 @@ use crate::Task;
 pub struct TodoList {
     // 定义一个公开的结构体 TodoList
     items: Vec<Task>, // 定义一个字段 items，类型为 Vec<Task>，用于存储待办事项列表
-    new_item: String, // 定义一个字段 new_item，类型为 Task，用于存储用户输入的新待办事项
+    new_item: String,     // 定义一个字段 new_item，类型为 String，用于存储用户输入的新待办事项
 }
 
 // 默认数据初始化
@@ -62,7 +62,7 @@ impl App for TodoList {
             ui.separator(); // 显示一个分隔线
             for item in &self.items {
                 // 遍历 items 列表
-                ui.label(item.content.clone()); // 显示每一个待办事项
+                item.ui(ui); // 显示每一个 Task 的 ui
             }
         });
     }
