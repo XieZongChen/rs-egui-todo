@@ -42,6 +42,9 @@ impl Task {
     }
 
     pub fn ui(&self, ui: &mut egui::Ui) {
-        ui.label(&self.content);
+        ui.horizontal(|ui| {
+            ui.label(&self.content);
+            if ui.button("del").clicked() {}
+        });
     }
 }

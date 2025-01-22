@@ -1,7 +1,7 @@
 use eframe::App; // 引入 eframe 库中的 App trait，用于定义应用程序的行为
 use egui::Context; // 引入 egui 库中的 Context 结构体，用于管理 egui 的绘制上下文
 
-use crate::{Task};
+use crate::Task;
 
 // 派生 Deserialize、Serialize，这样就可以在关机时持久化应用状态
 #[derive(serde::Deserialize, serde::Serialize)]
