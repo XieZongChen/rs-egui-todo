@@ -1,5 +1,6 @@
 use eframe::App; // 引入 eframe 库中的 App trait，用于定义应用程序的行为
 use egui::Context; // 引入 egui 库中的 Context 结构体，用于管理 egui 的绘制上下文
+use indexmap::IndexMap; 
 
 use crate::Task;
 
@@ -9,19 +10,18 @@ use crate::Task;
 
 pub struct TodoList {
     // 定义一个公开的结构体 TodoList
-    items: Vec<Task>, // 定义一个字段 items，类型为 Vec<Task>，用于存储待办事项列表
+    items: IndexMap<usize, Task>, // 定义一个字段 items，类型为 IndexMap<usize, Task>，用于存储待办事项列表
     new_item: String,     // 定义一个字段 new_item，类型为 String，用于存储用户输入的新待办事项
+    next_id: usize,       // 用于生成下一个任务的唯一 ID
 }
 
 // 默认数据初始化
 impl Default for TodoList {
     fn default() -> Self {
         Self {
-            items: vec![
-                Task::create_by_content("Item 1".to_string()),
-                Task::create_by_content("Item 2".to_string()),
-            ], // 初始化 items 字段，包含两个示例待办事项
+            items: IndexMap::new(), // 初始化 items 字段
             new_item: String::new(), // 初始化 new_item 字段，为空字符串
+            next_id: 2, // 初始化 next_id，从 2 开始
         }
     }
 }
@@ -53,14 +53,14 @@ impl App for TodoList {
                     // 显示一个按钮 "Add"，当按钮被点击时执行以下代码
                     if !self.new_item.is_empty() {
                         // 如果 new_item 不为空
-                        self.items
-                            .push(Task::create_by_content(self.new_item.clone())); // 将 new_item 复制并添加到 items 列表中
+                        self.items.insert(self.next_id, Task::create_by_content(self.new_item.clone())); // 将 new_item 复制并添加到 items 列表中
                         self.new_item.clear(); // 清空 new_item
+                        self.next_id += 1; // 递增 next_id
                     }
                 }
             });
             ui.separator(); // 显示一个分隔线
-            for item in &self.items {
+            for (_, item) in &self.items {
                 // 遍历 items 列表
                 item.ui(ui); // 显示每一个 Task 的 ui
             }
