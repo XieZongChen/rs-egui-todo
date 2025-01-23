@@ -19,22 +19,16 @@ pub enum TaskGenre {
  */
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Task {
+    pub id: usize,          // 唯一 id
     pub status: TaskStatus, // 任务状态
     pub genre: TaskGenre,   // 任务类型
     pub content: String,    // 任务内容
 }
 
 impl Task {
-    pub fn new() -> Task {
+    pub fn create(content: String, id: usize) -> Task {
         Task {
-            status: TaskStatus::Todo,
-            genre: TaskGenre::Medium,
-            content: String::new(),
-        }
-    }
-
-    pub fn create_by_content(content: String) -> Task {
-        Task {
+            id: id,
             status: TaskStatus::Todo,
             genre: TaskGenre::Medium,
             content: content,
