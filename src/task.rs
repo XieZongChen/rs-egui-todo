@@ -35,12 +35,23 @@ impl Task {
         }
     }
 
-    pub fn ui(&self, ui: &mut egui::Ui, on_delete: impl FnOnce()) {
+    pub fn ui(&self, ui: &mut egui::Ui, on_delete: impl FnOnce(), on_status_change: impl FnOnce(TaskStatus)) {
         ui.horizontal(|ui| {
             ui.label(&self.content);
             if ui.button("del").clicked() {
                 on_delete();
             }
+            if ui.button("ok").clicked() {
+                on_status_change(Task::get_next_status(self.status.clone()));
+            }
         });
+    }
+
+    fn get_next_status(cur_status: TaskStatus) -> TaskStatus {
+        return match cur_status {
+            TaskStatus::Todo => TaskStatus::Doing,
+            TaskStatus::Doing => TaskStatus::Done,
+            TaskStatus::Done => TaskStatus::Done,
+        };
     }
 }

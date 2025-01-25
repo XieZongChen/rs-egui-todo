@@ -63,12 +63,32 @@ impl App for TodoList {
                 }
             });
             ui.separator(); // 显示一个分隔线
-            for (_, item) in &mut self.items.clone() {
-                // 遍历 items 列表
-                let id = item.id;
-                item.ui(ui, || {
-                    self.items.shift_remove(&id); // 使用闭包来处理删除操作
-                }); // 显示每一个 Task 的 ui
+            let mut to_delete = None; // 记录当前帧需要删除的 task id
+            let mut status_update = None; // 记录当前帧需要更新的 task id
+            
+            // 由于遍历中对 items 有多处修改，直接遍历 items 会导致借用冲突，通过先收集所有的 keys 到一个新的 Vec 中再进行遍历，可以有效解决这个问题
+            let ids: Vec<usize> = self.items.keys().cloned().collect();
+            for id in ids {
+                if let Some(item) = self.items.get(&id) {
+                    let item_clone = item.clone();
+                    item_clone.ui(ui, 
+                        || {
+                            to_delete = Some(id);
+                        },
+                        |new_status| {
+                            status_update = Some((id, new_status));
+                        }
+                    );
+                }
+            }
+            
+            if let Some(id) = to_delete {
+                self.items.shift_remove(&id);
+            }
+            if let Some((id, new_status)) = status_update {
+                if let Some(task) = self.items.get_mut(&id) {
+                    task.status = new_status;
+                }
             }
         });
     }
