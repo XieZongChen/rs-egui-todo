@@ -1,3 +1,4 @@
+use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -35,10 +36,12 @@ impl Task {
         }
     }
 
-    pub fn ui(&self, ui: &mut egui::Ui) {
+    pub fn ui(&self, ui: &mut egui::Ui, list: &mut IndexMap<usize, Task>) {
         ui.horizontal(|ui| {
             ui.label(&self.content);
-            if ui.button("del").clicked() {}
+            if ui.button("del").clicked() {
+                list.shift_remove(&self.id);
+            }
         });
     }
 }

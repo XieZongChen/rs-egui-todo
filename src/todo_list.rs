@@ -63,9 +63,9 @@ impl App for TodoList {
                 }
             });
             ui.separator(); // 显示一个分隔线
-            for (_, item) in &self.items {
+            for (_, item) in &mut self.items.clone() {
                 // 遍历 items 列表
-                item.ui(ui); // 显示每一个 Task 的 ui
+                item.ui(ui, &mut self.items); // 显示每一个 Task 的 ui
             }
         });
     }
