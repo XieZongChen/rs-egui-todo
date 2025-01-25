@@ -65,7 +65,10 @@ impl App for TodoList {
             ui.separator(); // 显示一个分隔线
             for (_, item) in &mut self.items.clone() {
                 // 遍历 items 列表
-                item.ui(ui, &mut self.items); // 显示每一个 Task 的 ui
+                let id = item.id;
+                item.ui(ui, || {
+                    self.items.shift_remove(&id); // 使用闭包来处理删除操作
+                }); // 显示每一个 Task 的 ui
             }
         });
     }

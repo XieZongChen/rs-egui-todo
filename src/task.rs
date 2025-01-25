@@ -36,11 +36,11 @@ impl Task {
         }
     }
 
-    pub fn ui(&self, ui: &mut egui::Ui, list: &mut IndexMap<usize, Task>) {
+    pub fn ui(&self, ui: &mut egui::Ui, on_delete: impl FnOnce()) {
         ui.horizontal(|ui| {
             ui.label(&self.content);
             if ui.button("del").clicked() {
-                list.shift_remove(&self.id);
+                on_delete();
             }
         });
     }
