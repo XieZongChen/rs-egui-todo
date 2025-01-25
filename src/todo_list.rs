@@ -68,19 +68,55 @@ impl App for TodoList {
             
             // 由于遍历中对 items 有多处修改，直接遍历 items 会导致借用冲突，通过先收集所有的 keys 到一个新的 Vec 中再进行遍历，可以有效解决这个问题
             let ids: Vec<usize> = self.items.keys().cloned().collect();
-            for id in ids {
-                if let Some(item) = self.items.get(&id) {
-                    let item_clone = item.clone();
-                    item_clone.ui(ui, 
-                        || {
-                            to_delete = Some(id);
-                        },
-                        |new_status| {
-                            status_update = Some((id, new_status));
+            
+            // 创建三个区域分别显示不同状态的任务
+            ui.horizontal(|ui| {
+                ui.vertical(|ui| {
+                    ui.heading("待办");
+                    for id in &ids {
+                        if let Some(item) = self.items.get(id) {
+                            if matches!(item.status, crate::TaskStatus::Todo) {
+                                let item_clone = item.clone();
+                                item_clone.ui(ui, 
+                                    || { to_delete = Some(*id); },
+                                    |new_status| { status_update = Some((*id, new_status)); }
+                                );
+                            }
                         }
-                    );
-                }
-            }
+                    }
+                });
+                ui.separator();
+                ui.vertical(|ui| {
+                    ui.heading("进行中");
+                    for id in &ids {
+                        if let Some(item) = self.items.get(id) {
+                            if matches!(item.status, crate::TaskStatus::Doing) {
+                                let item_clone = item.clone();
+                                item_clone.ui(ui, 
+                                    || { to_delete = Some(*id); },
+                                    |new_status| { status_update = Some((*id, new_status)); }
+                                );
+                            }
+                        }
+                    }
+                });
+                ui.separator();
+                ui.vertical(|ui| {
+                    ui.heading("已完成");
+                    for id in &ids {
+                        if let Some(item) = self.items.get(id) {
+                            if matches!(item.status, crate::TaskStatus::Done) {
+                                let item_clone = item.clone();
+                                item_clone.ui(ui, 
+                                    || { to_delete = Some(*id); },
+                                    |new_status| { status_update = Some((*id, new_status)); }
+                                );
+                            }
+                        }
+                    }
+                });
+            });
+
             
             if let Some(id) = to_delete {
                 self.items.shift_remove(&id);
