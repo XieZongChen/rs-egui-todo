@@ -71,7 +71,12 @@ impl App for TodoList {
             
             // 创建三个区域分别显示不同状态的任务
             ui.horizontal(|ui| {
+                ui.spacing_mut().item_spacing.x = 10.0;
+                let available_width = ui.available_width();
+                let column_width = (available_width - 20.0) / 3.0; // 减去间距后平均分配
+
                 ui.vertical(|ui| {
+                    ui.set_min_width(column_width);
                     ui.heading("待办");
                     for id in &ids {
                         if let Some(item) = self.items.get(id) {
@@ -87,6 +92,7 @@ impl App for TodoList {
                 });
                 ui.separator();
                 ui.vertical(|ui| {
+                    ui.set_min_width(column_width);
                     ui.heading("进行中");
                     for id in &ids {
                         if let Some(item) = self.items.get(id) {
@@ -102,6 +108,7 @@ impl App for TodoList {
                 });
                 ui.separator();
                 ui.vertical(|ui| {
+                    ui.set_min_width(column_width);
                     ui.heading("已完成");
                     for id in &ids {
                         if let Some(item) = self.items.get(id) {
