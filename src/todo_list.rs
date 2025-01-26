@@ -71,9 +71,9 @@ impl App for TodoList {
             
             // 创建三个区域分别显示不同状态的任务
             ui.horizontal(|ui| {
-                ui.spacing_mut().item_spacing.x = 10.0;
-                let available_width = ui.available_width();
-                let column_width = (available_width - 20.0) / 3.0; // 减去间距后平均分配
+                ui.spacing_mut().item_spacing.x = 10.0; // 设置水平布局中元素之间的水平间距
+                let available_width = ui.available_width(); // 获取当前区域的可用宽度
+                let column_width = (available_width - 20.0) / 3.0; // 计算每个区域的宽度
 
                 ui.vertical(|ui| {
                     ui.set_min_width(column_width);
