@@ -37,12 +37,14 @@ impl Task {
 
     pub fn ui(&self, ui: &mut egui::Ui, on_delete: impl FnOnce(), on_status_change: impl FnOnce(TaskStatus)) {
         ui.horizontal(|ui| {
-            ui.label(&self.content);
-            if ui.button("del").clicked() {
-                on_delete();
-            }
-            if ui.button("ok").clicked() {
-                on_status_change(Task::get_next_status(self.status.clone()));
+            let response = ui.add(egui::Label::new(&self.content));
+            if response.hovered() {
+                if ui.button("del").clicked() {
+                    on_delete();
+                }
+                if ui.button("ok").clicked() {
+                    on_status_change(Task::get_next_status(self.status.clone()));
+                }
             }
         });
     }
