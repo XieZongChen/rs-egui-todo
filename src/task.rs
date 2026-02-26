@@ -37,13 +37,18 @@ impl Task {
 
     pub fn ui(&self, ui: &mut egui::Ui, on_delete: impl FnOnce(), on_status_change: impl FnOnce(TaskStatus)) {
         ui.horizontal(|ui| {
-            let response = ui.add(egui::Label::new(&self.content));
-            if response.hovered() {
-                if ui.button("del").clicked() {
-                    on_delete();
+            let label_resp = ui.add(egui::Label::new(&self.content));
+            let btn_w = ui.spacing().interact_size.x * 2.0 + ui.spacing().item_spacing.x;
+            let btn_h = ui.spacing().interact_size.y;
+            let (buttons_rect, buttons_resp) = ui.allocate_exact_size(egui::vec2(btn_w, btn_h), egui::Sense::hover());
+            let hovered = ui.rect_contains_pointer(label_resp.rect.union(buttons_rect)) || buttons_resp.hovered();
+            if hovered {
+                let mut child = ui.new_child(egui::UiBuilder::new().max_rect(buttons_rect));
+                if child.button("del").clicked() {
+                        on_delete();
                 }
-                if ui.button("ok").clicked() {
-                    on_status_change(Task::get_next_status(self.status.clone()));
+                if child.button("ok").clicked() {
+                        on_status_change(Task::get_next_status(self.status.clone()));
                 }
             }
         });
