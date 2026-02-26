@@ -6,7 +6,7 @@ use crate::Task;
 
 // 派生 Deserialize、Serialize，这样就可以在关机时持久化应用状态
 #[derive(serde::Deserialize, serde::Serialize)]
-#[serde(default)]
+#[serde(default)] 
 
 pub struct TodoList {
     // 定义一个公开的结构体 TodoList
