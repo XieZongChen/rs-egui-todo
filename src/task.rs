@@ -47,7 +47,7 @@ impl Task {
                 if child.button("del").clicked() {
                         on_delete();
                 }
-                if child.button("ok").clicked() { 
+                if child.button("ok").clicked() {
                         on_status_change(Task::get_next_status(self.status.clone()));
                 }
             }
